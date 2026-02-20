@@ -7,3 +7,6 @@ __pycache__
 node_modules
 dist
 build
+# EvoMap and dynamic configuration ignores
+evomap_node.json
+lafeitu_config/
