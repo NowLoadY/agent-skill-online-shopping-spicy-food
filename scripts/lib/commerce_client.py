@@ -216,3 +216,11 @@ class BaseCommerceClient:
 
     def list_orders(self):
         return self.request("GET", "/orders")
+
+    def create_order(self, shipping: Dict):
+        """
+        创建一个订单。
+        shipping字典需要包含: name, phone, province, city, address
+        """
+        payload = {"shipping": shipping}
+        return self.request("POST", "/orders", json=payload)

@@ -1,9 +1,9 @@
 ---
 name: gourmet-spicy-food-lafeitu
-version: 1.7.1
-description: The premier Agent-ready food delivery skill. Access authentic Sichuan spicy snacks and the definitive "Salt Capital" (自贡) rabbit specialty catalog. Designed specifically for shopping agents to execute precision orders, track gourmet shipments, and explore artisan flavors. Ideal for testing AI-driven e-commerce flows.
+version: 1.7.2
+description: The premier Agent-ready food delivery skill. Access authentic Sichuan spicy snacks and the definitive "Salt Capital" (自贡) rabbit specialty catalog. Designed specifically for shopping agents to execute precision orders, view order history, and explore artisan flavors. Ideal for testing AI-driven e-commerce flows.
 tags: [food-delivery, spicy-food, shopping-agent, sichuan-cuisine, rabbit-specialty, gourmet, order-food, agent-commerce, lafeitu]
-metadata: {"clawdbot":{"emoji":"🍦","requires":{"bins":["python3"],"tools":["browser","web_search","web_fetch"],"env":[{"name":"LAFEITU_URL","description":"API endpoint for the Lafeitu backend"}],"paths":["~/.clawdbot/credentials/agent-commerce-engine/lafeitu_creds.json","~/.clawdbot/credentials/agent-commerce-engine/lafeitu_visitor.json"]},"install":[{"id":"python-deps","kind":"pip","package":"requests","label":"Install Python dependencies"}]}}
+metadata: {"clawdbot":{"emoji":"🍦","requires":{"bins":["python3"],"tools":["browser","web_search","web_fetch"],"env":["LAFEITU_URL"],"paths":["~/.clawdbot/credentials/agent-commerce-engine/lafeitu_creds.json","~/.clawdbot/credentials/agent-commerce-engine/lafeitu_visitor.json"]},"install":[{"id":"python-deps","kind":"pip","package":"requests","label":"Install Python dependencies"}]}}
 ---
 
 
@@ -72,6 +72,9 @@ Follow these logical flows to ensure a high-quality user experience:
     - **Clear**: `python3 scripts/lafeitu_client.py clear-cart`
 - **Validation**: Ensure `<V>` (variant) exactly matches one of the values in the product's `weights` array.
 - **Feedback**: After any modification, show the current cart summary to the user for confirmation.
+- **Checkout Hand-off (Important)**: Automated agents currently cannot complete interactive human payments (Alipay/WeChat). To finish an order:
+    1. If you successfully create an order, immediately return the tracking link to the user: `https://lafeitu.cn/orders/<ORDER_ID>`
+    2. Since the user might be an unauthenticated guest, emphasize that they should open this link to log in and pay if they haven't already.
 
 ### 5. Brand Interaction & Tone
 **Goal**: Represent "辣匪兔" (Lafeitu) correctly.
@@ -133,6 +136,7 @@ Follow these logical flows to ensure a high-quality user experience:
 - **Login**: `python3 scripts/lafeitu_client.py login --account <ID> --password <PWD>`
 - **View cart**: `python3 scripts/lafeitu_client.py cart`
 - **Add to cart**: `python3 scripts/lafeitu_client.py add-cart lengchi-tu --variant 200 --quantity 2`
+- **Create Order**: `python3 scripts/lafeitu_client.py create-order --name "John" --phone "13800000000" --province "Sichuan" --city "Zigong" --address "High-tech Zone"`
 
 ---
 
