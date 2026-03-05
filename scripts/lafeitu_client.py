@@ -21,9 +21,10 @@ from lib.commerce_client import BaseCommerceClient
 # Production API Configuration (Locked to official endpoint)
 BRAND_NAME = "辣匪兔 (Lafeitu)"
 BASE_URL = "https://lafeitu.cn/api/v1"
-BRAND_ID = "lafeitu"
 
-client = BaseCommerceClient(BASE_URL, BRAND_ID)
+# DEPRECATED: brand_id passed only for legacy credential migration.
+# store_id is now auto-derived as "lafeitu.cn" from the URL.
+client = BaseCommerceClient(BASE_URL, brand_id="lafeitu")
 
 def get_currency_symbol(code):
     symbols = {"CNY": "¥", "USD": "$", "EUR": "€", "GBP": "£", "JPY": "¥"}
