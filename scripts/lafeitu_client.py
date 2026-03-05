@@ -25,8 +25,54 @@ BRAND_ID = "lafeitu"
 
 client = BaseCommerceClient(BASE_URL, BRAND_ID)
 
-def format_output(data):
-    print(json.dumps(data, indent=2, ensure_ascii=False))
+def get_currency_symbol(code):
+    symbols = {"CNY": "¥", "USD": "$", "EUR": "€", "GBP": "£", "JPY": "¥"}
+    return symbols.get(code, f"{code} ")
+
+def format_output(data, command=None):
+    if command == "cart" and isinstance(data, dict) and data.get("success") and "items" in data:
+        print(f"\n--- {BRAND_NAME} 购物车 ---")
+        if not data["items"]:
+            print("您的购物车是空的。")
+        else:
+            curr = data.get("currency", "CNY")
+            sym = get_currency_symbol(curr)
+            print(f"{'商品名称':<20} | {'规格':<10} | {'单价':<8} | {'数量':<4} | {'小计':<8}")
+            print("-" * 65)
+            for item in data["items"]:
+                name = item.get("product_name", item.get("product_slug", ""))
+                variant = item.get("gram", item.get("variant", ""))
+                price = item.get("price", 0)
+                qty = item.get("quantity", 0)
+                subtotal = price * qty
+                i_sym = get_currency_symbol(item.get("currency", curr))
+                print(f"{name[:20]:<20} | {str(variant):<10} | {i_sym}{price:<7.2f} | {qty:<4} | {i_sym}{subtotal:<7.2f}")
+            print("-" * 65)
+            tp = data.get("totalPrice", 0)
+            tvp = data.get("totalVipPrice", 0)
+            print(f"总计金额: {sym}{tp:.2f}")
+            if tvp < tp:
+                print(f"首单/VIP价: {sym}{tvp:.2f} (立省 {sym}{tp-tvp:.2f}!)")
+        print("-" * 25 + "\n")
+    
+    elif command == "list" and isinstance(data, dict) and data.get("success") and "products" in data:
+        print(f"\n--- {BRAND_NAME} 美食菜单 (第 {data.get('page')} 页) ---")
+        for p in data["products"]:
+            name = p.get("name")
+            slug = p.get("slug")
+            desc = p.get("description", "")
+            print(f"• {name} ({slug})")
+            if p.get("variants"):
+                prices = []
+                for v in p["variants"]:
+                    sym = get_currency_symbol(v.get("currency", "CNY"))
+                    prices.append(f"{v.get('variant')}g: {sym}{v.get('price')}")
+                print(f"  规格: {' / '.join(prices)}")
+        print(f"\n共 {data.get('total')} 款商品 | 总计 {data.get('totalPages')} 页")
+        print("-" * 25 + "\n")
+    
+    else:
+        print(json.dumps(data, indent=2, ensure_ascii=False))
 
 def main():
     parser = argparse.ArgumentParser(description=f"{BRAND_NAME} 官方 AI 助手命令行工具")
@@ -142,10 +188,10 @@ def main():
         format_output({"success": True, "message": "Logged out and credentials cleared."})
 
     elif args.command == "search":
-        format_output(client.search_products(args.query, args.page, args.limit))
+        format_output(client.search_products(args.query, args.page, args.limit), "list")
 
     elif args.command == "list":
-        format_output(client.list_products(args.page, args.limit))
+        format_output(client.list_products(args.page, args.limit), "list")
 
     elif args.command == "get":
         format_output(client.get_product(args.slug))
@@ -158,7 +204,7 @@ def main():
         format_output(client.update_profile(data))
 
     elif args.command == "cart":
-        format_output(client.get_cart())
+        format_output(client.get_cart(), "cart")
 
     elif args.command == "add-cart":
         format_output(client.modify_cart("add", args.slug, args.variant, args.quantity))
