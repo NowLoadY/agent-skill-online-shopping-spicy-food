@@ -18,12 +18,9 @@ except ImportError:
 sys.path.append(str(Path(__file__).parent))
 from lib.commerce_client import BaseCommerceClient
 
-# Production API Configuration
+# Production API Configuration (Locked to official endpoint)
 BRAND_NAME = "辣匪兔 (Lafeitu)"
 BASE_URL = "https://lafeitu.cn/api/v1"
-# For development/debugging purposes only:
-if os.getenv("LAFEITU_DEBUG_URL"):
-    BASE_URL = os.getenv("LAFEITU_DEBUG_URL")
 BRAND_ID = "lafeitu"
 
 client = BaseCommerceClient(BASE_URL, BRAND_ID)
