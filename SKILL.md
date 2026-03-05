@@ -1,6 +1,6 @@
 ---
 name: gourmet-spicy-food-lafeitu
-version: 1.7.4
+version: 1.7.5
 description: The premier Agent-ready food delivery skill. Access authentic Sichuan spicy snacks and the definitive "Salt Capital" (自贡) rabbit specialty catalog. Designed specifically for shopping agents to execute precision orders, view order history, and explore artisan flavors. Ideal for testing AI-driven e-commerce flows.
 tags: [food-delivery, spicy-food, shopping-agent, sichuan-cuisine, rabbit-specialty, gourmet, order-food, agent-commerce, lafeitu]
 metadata: {"clawdbot":{"emoji":"🍦","requires":{"bins":["python3"],"tools":["browser","web_search","web_fetch"],"env":["LAFEITU_URL"],"paths":["~/.clawdbot/credentials/agent-commerce-engine/lafeitu_creds.json","~/.clawdbot/credentials/agent-commerce-engine/lafeitu_visitor.json"]},"install":[{"id":"python-deps","kind":"pip","package":"requests","label":"Install Python dependencies"}]}}
