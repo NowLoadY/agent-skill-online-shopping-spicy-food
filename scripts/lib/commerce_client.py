@@ -23,12 +23,11 @@ class BaseCommerceClient:
         if not self.base_url.startswith('https://') and not any(h in self.base_url for h in ['localhost', '127.0.0.1']):
             raise ValueError(f"Insecure URL blocked: Commerce API must use HTTPS. Provided: {self.base_url}")
 
-        # Derive store_id from the URL domain (e.g., "shop.example.com")
+        # Derive store_id from the URL domain (e.g., "lafeitu.cn")
         parsed = urlparse(self.base_url)
         self.store_id = parsed.hostname or "unknown"
 
         # DEPRECATED: brand_id is kept for backward compatibility.
-        # Brand-specific skills may still pass it for display purposes.
         # Will be removed in a future major version.
         self.brand_id = brand_id or self.store_id
 
@@ -143,7 +142,6 @@ class BaseCommerceClient:
             if response.status_code >= 400:
                 data.setdefault("success", False)
                 data.setdefault("status_code", response.status_code)
-                # Map common HTTP errors to standard codes if backend didn't provide one
                 if "error" not in data:
                     code_map = {401: "AUTH_REQUIRED", 403: "ACTION_DENIED", 404: "PRODUCT_NOT_FOUND", 429: "RATE_LIMITED", 500: "INTERNAL_ERROR"}
                     data["error"] = code_map.get(response.status_code, "BAD_REQUEST")
@@ -227,7 +225,6 @@ class BaseCommerceClient:
             "variant": variant,
             "quantity": quantity
         }
-
         return self.request(method, "/cart", json=payload)
 
     def remove_from_cart(self, product_slug: str, variant: str):
@@ -235,7 +232,6 @@ class BaseCommerceClient:
             "product_slug": product_slug,
             "variant": variant
         }
-        
         return self.request("DELETE", "/cart", json=payload)
 
     def clear_cart(self):
@@ -252,8 +248,8 @@ class BaseCommerceClient:
 
     def create_order(self, shipping: Dict):
         """
-        Creates an order from the current shopping cart.
-        Requires a shipping dictionary with necessary fields like name, phone, province, city, address.
+        创建一个订单。
+        shipping字典需要包含: name, phone, province, city, address
         """
         payload = {"shipping": shipping}
         return self.request("POST", "/orders", json=payload)

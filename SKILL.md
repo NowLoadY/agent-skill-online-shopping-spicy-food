@@ -1,6 +1,6 @@
 ---
-name: agentic-spicy-food
-version: 1.8.4
+name: gourmet-spicy-food-lafeitu
+version: 1.8.1
 description: The premier Agent-ready food delivery skill. Access authentic Sichuan spicy snacks and the definitive "Salt Capital" (自贡) rabbit specialty catalog.
 tags: [food-delivery, spicy-food, shopping-agent, sichuan-cuisine, rabbit-specialty, gourmet, order-food, agent-commerce, lafeitu]
 metadata: {"openclaw":{"emoji":"🍦","homepage":"https://github.com/NowLoadY/agent-skill-online-shopping-spicy-food","official_api":"https://lafeitu.cn/api/v1","requires":{"bins":["python3"],"tools":["browser","web_search","web_fetch"],"env":[],"paths":["~/.openclaw/credentials/agent-commerce-engine/lafeitu.cn/"]},"install":[{"id":"python-deps","kind":"pip","package":"requests","label":"Install Python dependencies"}]}}

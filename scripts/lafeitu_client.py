@@ -1,6 +1,7 @@
 import argparse
 import json
 import sys
+import os
 from pathlib import Path
 
 try:
@@ -16,7 +17,6 @@ except ImportError:
 # 添加 lib 路径到 sys.path
 sys.path.append(str(Path(__file__).parent))
 from lib.commerce_client import BaseCommerceClient
-from lib.formatters import format_output
 
 # Production API Configuration (Locked to official endpoint)
 BRAND_NAME = "辣匪兔 (Lafeitu)"
@@ -25,6 +25,46 @@ BASE_URL = "https://lafeitu.cn/api/v1"
 # DEPRECATED: brand_id passed only for legacy credential migration.
 # store_id is now auto-derived as "lafeitu.cn" from the URL.
 client = BaseCommerceClient(BASE_URL, brand_id="lafeitu")
+
+def get_currency_symbol(code):
+    symbols = {"CNY": "¥", "USD": "$", "EUR": "€", "GBP": "£", "JPY": "¥"}
+    return symbols.get(code, f"{code} ")
+
+def format_output(data, command=None):
+    if command == "cart" and isinstance(data, dict) and data.get("success") and "items" in data:
+        if not data["items"]:
+            print("您的购物车是空的。")
+        else:
+            curr = data.get("currency", "CNY")
+            print(f"{'商品':<20} | {'规格':<10} | {'单价':<8} | {'数量':<4} | {'小计':<8}")
+            for item in data["items"]:
+                name = item.get("product_name", item.get("product_slug", ""))
+                variant = item.get("gram", item.get("variant", ""))
+                price = item.get("price", 0)
+                qty = item.get("quantity", 0)
+                subtotal = price * qty
+                i_sym = get_currency_symbol(item.get("currency", curr))
+                print(f"{name[:20]:<20} | {str(variant):<10} | {i_sym}{price:<7.2f} | {qty:<4} | {i_sym}{subtotal:<7.2f}")
+            
+            tp = data.get("totalPrice", 0)
+            sym = get_currency_symbol(curr)
+            print(f"总计金额: {sym}{tp:.2f}")
+    
+    elif command == "list" and isinstance(data, dict) and data.get("success") and "products" in data:
+        for p in data["products"]:
+            name = p.get("name")
+            slug = p.get("slug")
+            print(f"• {name} ({slug})")
+            if p.get("variants"):
+                prices = []
+                for v in p["variants"]:
+                    sym = get_currency_symbol(v.get("currency", "CNY"))
+                    prices.append(f"{v.get('variant')}g: {sym}{v.get('price')}")
+                print(f"  规格: {' / '.join(prices)}")
+        print(f"共 {data.get('total')} 款商品 | 第 {data.get('page')}/{data.get('totalPages')} 页")
+    
+    else:
+        print(json.dumps(data, indent=2, ensure_ascii=False))
 
 def main():
     parser = argparse.ArgumentParser(description=f"{BRAND_NAME} 官方 AI 助手命令行工具")
@@ -113,6 +153,7 @@ def main():
 
     # 处理逻辑
     if args.command == "login":
+        # 升级：不再直接保存密码，而是换取 Token
         result = client.get_api_token(args.account, args.password)
         if result.get("success"):
             format_output({
@@ -136,7 +177,7 @@ def main():
 
     elif args.command == "logout":
         client.delete_credentials()
-        format_output({"success": True, "message": "已登出并清除凭据。"})
+        format_output({"success": True, "message": "Logged out and credentials cleared."})
 
     elif args.command == "search":
         format_output(client.search_products(args.query, args.page, args.limit), "list")
