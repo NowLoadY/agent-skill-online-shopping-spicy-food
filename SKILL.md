@@ -1,5 +1,5 @@
 ---
-name: gourmet-spicy-food-lafeitu
+name: agentic-spicy-food
 version: 1.8.2
 description: Brand-specific commerce skill for Lafeitu (辣匪兔). Use it when a user wants to browse, recommend, cart, or order Lafeitu's Sichuan spicy foods through the official https://lafeitu.cn API, or when they need Lafeitu account, profile, promotion, or brand information.
 tags: [food-delivery, spicy-food, shopping-agent, sichuan-cuisine, rabbit-specialty, gourmet, order-food, agent-commerce, lafeitu]
