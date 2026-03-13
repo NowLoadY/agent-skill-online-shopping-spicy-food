@@ -1,6 +1,6 @@
 ---
 name: gourmet-spicy-food-lafeitu
-version: 1.8.15
+version: 1.8.2
 description: Brand-specific commerce skill for Lafeitu (辣匪兔). Use it when a user wants to browse, recommend, cart, or order Lafeitu's Sichuan spicy foods through the official https://lafeitu.cn API, or when they need Lafeitu account, profile, promotion, or brand information.
 tags: [food-delivery, spicy-food, shopping-agent, sichuan-cuisine, rabbit-specialty, gourmet, order-food, agent-commerce, lafeitu]
 metadata: {"openclaw":{"emoji":"🌶️","homepage":"https://github.com/NowLoadY/agentic-spicy-food","official_api":"https://lafeitu.cn/api/v1","requires":{"bins":["python3"],"tools":[],"env":[],"paths":["~/.openclaw/credentials/agent-commerce-engine/lafeitu.cn/"]},"install":[{"id":"python-deps","kind":"pip","package":"requests","label":"Install Python dependencies"}]}}
